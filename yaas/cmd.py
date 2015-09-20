@@ -1,14 +1,17 @@
 # coding: utf-8
 
 import argparse
+import inspect
 import sys
 
 from . import __version__
 
-def version(args):
+def version(parser, args):
+    """print the yaas version"""
     print "yaas version %s" % __version__
 
-def hello(args):
+def hello(parser, args):
+    """show an elephant"""
     print "                .-.._       "
     print "          __  /`     '.     "
     print "       .-'  `/   (   a \    "
@@ -20,17 +23,17 @@ def hello(args):
 
 def main():
     parser = argparse.ArgumentParser(prog="yaas")
-    subparsers = parser.add_subparsers()
+    subparsers = parser.add_subparsers(dest="command")
 
-    version_parser = subparsers.add_parser(
-        'version',
-        help="print Yaas version")
-    version_parser.set_defaults(func=version)
+    commands = {
+        'version' : version,
+        'hello' : hello
+        }
 
-    hello_parser = subparsers.add_parser(
-        'hello',
-        help="show a greeting")
-    hello_parser.set_defaults(func=hello)
+    for name, fn in commands.iteritems():
+        subparsers.add_parser(name, help=inspect.getdoc(fn))
 
-    args = parser.parse_args()
-    args.func(args)
+    args, extra = parser.parse_known_args(sys.argv[1:])
+
+    commands[args.command](subparsers.choices[args.command], extra)
+
