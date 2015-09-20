@@ -6,9 +6,11 @@ import sys
 
 from . import __version__
 
+YAAS_VERSION = "yaas version {0}".format(__version__)
+
 def version(parser, args):
     """print the yaas version"""
-    print "yaas version %s" % __version__
+    print YAAS_VERSION
 
 def hello(parser, args):
     """show an elephant"""
@@ -23,6 +25,14 @@ def hello(parser, args):
 
 def main():
     parser = argparse.ArgumentParser(prog="yaas")
+
+    parser.add_argument(
+        '-v',
+        '--version',
+        action='version',
+        version=YAAS_VERSION,
+        help="print the yaas version")
+
     subparsers = parser.add_subparsers(dest="command")
 
     commands = {
