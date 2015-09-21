@@ -3,8 +3,10 @@
 import argparse
 import inspect
 import sys
+import os
 
 from . import __version__
+from . import config
 
 YAAS_VERSION = "yaas version {0}".format(__version__)
 
@@ -24,6 +26,10 @@ def hello(parser, args):
     print "       |__|_|  |_|__\       "
 
 def main():
+    config.server_url = os.environ.get('YAAS_SERVER_URL', config.server_url)
+    config.username = os.environ.get('YAAS_USER', config.username)
+    config.password = os.environ.get('YAAS_PASSWORD', config.password)
+
     parser = argparse.ArgumentParser(prog="yaas")
 
     parser.add_argument(
