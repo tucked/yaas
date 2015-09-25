@@ -39,17 +39,24 @@ def main():
         version=YAAS_VERSION,
         help="print the yaas version")
 
+    parser.add_argument(
+        '--verbose',
+        action='store_true',
+        default=False,
+        help="print ambari api requests and responses")
+
     subparsers = parser.add_subparsers(dest="command")
 
     commands = {
         'version' : version,
-        'hello' : hello
+        'hello' : hello,
         }
 
     for name, fn in commands.iteritems():
         subparsers.add_parser(name, help=inspect.getdoc(fn))
 
     args, extra = parser.parse_known_args(sys.argv[1:])
+    config.args = args
 
     commands[args.command](subparsers.choices[args.command], extra)
 
