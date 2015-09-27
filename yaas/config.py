@@ -1,0 +1,27 @@
+# coding: utf-8
+
+# These default configs are overriden based on
+# command line arguments or environment variables
+
+server_url = None   # Must be overriden
+username = 'admin'
+password = 'admin'
+args = None
+
+def print_request_and_response(res, *args, **kwargs):
+    print "Request:", res.request.__dict__
+    print "Response:", res.__dict__
+
+def requests_opts():
+    opts = {
+        'auth': (username, password),
+        'headers': {'X-Requested-By': 'Ambari'},
+        }
+
+    if args.verbose:
+        opts['hooks'] = {
+            'response': print_request_and_response,
+            }
+
+    return opts
+
