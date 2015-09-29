@@ -14,6 +14,6 @@ setuptools.setup(
     description="Yet Another Ambari Shell",
     url="https://github.com/dmtucker/yaas",
     packages=['yaas'],
-    entry_points={ 'console_scripts': [ "yaas = yaas.cmd:main" ] }
+    entry_points={ 'console_scripts': [ "yaas = yaas.__main__:main" ] }
     )
 

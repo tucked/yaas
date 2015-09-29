@@ -66,3 +66,6 @@ def main():
 
     commands[args.command](subparsers.choices[args.command], extra)
 
+if __name__ == '__main__':
+    main()
+
