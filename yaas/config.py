@@ -1,5 +1,8 @@
 # coding: utf-8
 
+from __future__ import absolute_import
+from __future__ import print_function
+
 # These default configs are overriden based on
 # command line arguments or environment variables
 
@@ -9,8 +12,8 @@ password = 'admin'
 args = None
 
 def print_request_and_response(res, *args, **kwargs):
-    print "Request:", res.request.__dict__
-    print "Response:", res.__dict__
+    print("Request:", res.request.__dict__)
+    print("Response:", res.__dict__)
 
 def requests_opts():
     opts = {
