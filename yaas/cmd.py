@@ -1,5 +1,7 @@
 # coding: utf-8
 
+from __future__ import absolute_import
+from __future__ import print_function
 import argparse
 import inspect
 import sys
@@ -18,7 +20,7 @@ YAAS_VERSION = "yaas version {0}".format(__version__)
 
 def version(parser, args):
     """print the yaas version"""
-    print YAAS_VERSION
+    print(YAAS_VERSION)
 
 def main():
     config.server_url = os.environ.get('YAAS_SERVER_URL', config.server_url)
@@ -52,7 +54,7 @@ def main():
         'host': host.command,
         }
 
-    for name, fn in commands.iteritems():
+    for name, fn in commands.items():
         subparsers.add_parser(name, help=inspect.getdoc(fn))
 
     args, extra = parser.parse_known_args(sys.argv[1:])
