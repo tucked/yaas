@@ -6,7 +6,9 @@ from __future__ import print_function
 # These default configs are overriden based on
 # command line arguments or environment variables
 
-server_url = None   # Must be overriden
+scheme = 'http'
+server = None   # Must be overriden
+port = 8080
 username = 'admin'
 password = 'admin'
 args = None
