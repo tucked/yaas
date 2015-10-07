@@ -20,7 +20,7 @@ YAAS_VERSION = "yaas version {0}".format(__version__)
 
 
 def version(parser, args):
-    """print the yaas version"""
+    """ Print the version. """
     print(YAAS_VERSION)
 
 
@@ -38,13 +38,19 @@ def main():
         '--version',
         action='version',
         version=YAAS_VERSION,
-        help="print the yaas version")
+        help=inspect.getdoc(version))
 
     parser.add_argument(
-        '--verbose',
+        '--raw',
         action='store_true',
         default=False,
-        help="print ambari api requests and responses")
+        help="Print the raw Ambari response.")
+
+    parser.add_argument(
+        '--debug',
+        action='store_true',
+        default=False,
+        help="Print Ambari requests and responses.")
 
     subparsers = parser.add_subparsers(dest="command")
 
