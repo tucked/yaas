@@ -60,7 +60,7 @@ def main():
         subparsers.add_parser(name, help=inspect.getdoc(fn))
 
     args, extra = parser.parse_known_args(sys.argv[1:])
-    config.args = args
+    config.command = args
 
     if args.command != 'version' and config.server is None:
         parser.error("An Ambari server must be specified " \
