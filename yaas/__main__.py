@@ -18,9 +18,11 @@ from . import task
 
 YAAS_VERSION = "yaas version {0}".format(__version__)
 
+
 def version(parser, args):
     """print the yaas version"""
     print(YAAS_VERSION)
+
 
 def main():
     config.scheme = os.environ.get('YAAS_SCHEME', config.scheme)
@@ -61,10 +63,6 @@ def main():
 
     args, extra = parser.parse_known_args(sys.argv[1:])
     config.args = args
-
-    if args.command != 'version' and config.server is None:
-        parser.error("An Ambari server must be specified " \
-            "through environment variable YAAS_SERVER.")
 
     commands[args.command](subparsers.choices[args.command], extra)
 

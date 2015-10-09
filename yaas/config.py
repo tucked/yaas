@@ -7,7 +7,7 @@ from __future__ import print_function
 # command line arguments or environment variables
 
 scheme = 'http'
-server = None   # Must be overriden
+server = 'localhost'
 port = 8080
 username = 'admin'
 password = 'admin'
