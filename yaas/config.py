@@ -3,10 +3,10 @@
 from __future__ import absolute_import
 from __future__ import print_function
 
-# These default configs are overriden based on
-# command line arguments or environment variables
-
-server_url = None   # Must be overriden
+# These default configs are overriden by environment variables
+scheme = 'http'
+server = 'localhost'
+port = 8080
 username = 'admin'
 password = 'admin'
 args = None

@@ -18,12 +18,16 @@ from . import task
 
 YAAS_VERSION = "yaas version {0}".format(__version__)
 
+
 def version(parser, args):
     """print the yaas version"""
     print(YAAS_VERSION)
 
+
 def main():
-    config.server_url = os.environ.get('YAAS_SERVER_URL', config.server_url)
+    config.scheme = os.environ.get('YAAS_SCHEME', config.scheme)
+    config.server = os.environ.get('YAAS_SERVER', config.server)
+    config.port = os.environ.get('YAAS_PORT', config.port)
     config.username = os.environ.get('YAAS_USER', config.username)
     config.password = os.environ.get('YAAS_PASSWORD', config.password)
 
@@ -59,10 +63,6 @@ def main():
 
     args, extra = parser.parse_known_args(sys.argv[1:])
     config.args = args
-
-    if args.command != 'version' and config.server_url is None:
-        parser.error("Ambari server URL must be specified " \
-            "through environment variable YAAS_SERVER_URL")
 
     commands[args.command](subparsers.choices[args.command], extra)
 
