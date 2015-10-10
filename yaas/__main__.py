@@ -4,6 +4,7 @@ from __future__ import absolute_import
 from __future__ import print_function
 import argparse
 import inspect
+import requests
 import sys
 import os
 
@@ -70,7 +71,15 @@ def main():
     args, extra = parser.parse_known_args(sys.argv[1:])
     config.args = args
 
-    commands[args.command](subparsers.choices[args.command], extra)
+    try:
+        commands[args.command](subparsers.choices[args.command], extra)
+    except requests.exceptions.ConnectionError:
+        print(
+            'Ambari is not accessible at {url}.'.format(url=config.href('/')),
+            'Use YAAS_SCHEME, YAAS_SERVER, and YAAS_PORT to correct.',
+            file=sys.stderr)
+        sys.exit(1)
+
 
 if __name__ == '__main__':
     main()
