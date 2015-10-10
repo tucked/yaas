@@ -6,6 +6,7 @@ from __future__ import print_function
 import inspect
 import pprint
 import requests
+import sys
 
 from . import config
 
@@ -31,6 +32,11 @@ def _list(parser, args):
         **config.requests_opts())
     if config.args.raw:
         pprint.pprint(response.json())
-    else:
-        for item in response.json()['items']:
-            print(item['Hosts']['host_name'])
+        sys.exit(0)
+    try:
+        response.raise_for_status()
+    except requests.exceptions.HTTPError:
+        print(response.json()['message'], file=sys.stderr)
+        sys.exit(1)
+    for item in response.json()['items']:
+        print(item['Hosts']['host_name'])
