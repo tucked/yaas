@@ -79,6 +79,9 @@ def main():
             'Use YAAS_SCHEME, YAAS_SERVER, and YAAS_PORT to correct.',
             file=sys.stderr)
         sys.exit(1)
+    except requests.exceptions.HTTPError as error:
+        print(error.response.json()['message'], file=sys.stderr)
+        sys.exit(1)
 
 
 if __name__ == '__main__':
