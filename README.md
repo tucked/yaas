@@ -166,12 +166,25 @@ cluster3
 
 ##### list
 
+`GET /api/v1/hosts`
+
+Show hosts that are registered with `YAAS_SERVER`.
+
 ```
 $ yaas host list
-host1.example.com
-host2.example.com
+host1.example.com - cluster1
+host2.example.com - cluster1
 host3.example.com
 ```
+
+##### Options
+
+* --fields
+
+  `GET /api/v1/hosts?fields=...`
+
+  Add host details to the list.
+  See [the Ambari API documentation](https://github.com/apache/ambari/blob/trunk/ambari-server/docs/api/v1/host-resources.md) for valid fields.
 
 ##### show
 
