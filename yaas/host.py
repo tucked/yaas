@@ -56,11 +56,7 @@ def _list(parser, args):
     if config.args.raw:
         pprint.pprint(response.json())
         sys.exit(0)
-    try:
-        response.raise_for_status()
-    except requests.exceptions.HTTPError:
-        print(response.json()['message'], file=sys.stderr)
-        sys.exit(1)
+    response.raise_for_status()
     for item in response.json()['items']:
         line = []
         line_keys = ['host_name', 'cluster_name']
