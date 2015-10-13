@@ -71,7 +71,7 @@ def _list(parser, args):
 
 
 def _show(parser, args):
-    """ Show registered agent info. """
+    """ Show registered host info. """
     parser.add_argument(
         '--hardware',
         action='store_true',
