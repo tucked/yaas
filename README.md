@@ -132,7 +132,7 @@ $ yaas cluster create cluster3
 
 * --template
 
-### list
+##### list
 
 ```
 $ yaas cluster list
@@ -177,7 +177,7 @@ host2.example.com - cluster1
 host3.example.com
 ```
 
-##### Options
+###### Options
 
 * --fields
 
