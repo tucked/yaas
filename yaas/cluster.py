@@ -56,7 +56,27 @@ def _list(parser, args):
                 common.print_field(k=key, v=value, indent=4)
 
 def _create(parser, args):
-    pass
+    """Create a cluster"""
+    parser.add_argument(
+        'name',
+        help="Cluster name")
+    parser.add_argument(
+        '-t',
+        '--template',
+        nargs='?',
+        type=argparse.FileType('r'),
+        default=sys.stdin,
+        help="Cluster creation template")
+    create_args, _ = parser.parse_known_args(args)
+
+    response = requests.post(
+        common.href('/api/v1/clusters/' + create_args.name),
+        data=create_args.template.read(),
+        **common.requests_opts())
+    if common.args.raw:
+        pprint.pprint(response.json())
+        sys.exit(0)
+    response.raise_for_status()
 
 def _show(parser, args):
     pass
