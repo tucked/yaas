@@ -79,7 +79,46 @@ def _create(parser, args):
     response.raise_for_status()
 
 def _show(parser, args):
-    pass
+    """Show basic cluster information or export in a specified format"""
+    parser.add_argument(
+        'cluster',
+        nargs='+',
+        help="Shut down all services in cluster")
+    parser.add_argument(
+        '-f',
+        '--format',
+        action='store',
+        help="Export cluster in specified format (e.g. blueprint)")
+    show_args, _ = parser.parse_known_args(args)
+    if args.format is not None:
+        response = requests.get(
+            common.href('/api/v1/clusters/' + cluster),
+            params={'format': args.format},
+            **common.requests_opts())
+        response.raise_for_status()
+        if not common.args.raw:
+            response.raise_for_status()
+        pprint.pprint(response.json())
+        sys.exit(0)
+    for cluster in show_args.cluster:
+        response = requests.get(
+            common.href('/api/v1/clusters/' + cluster),
+            **common.requests_opts())
+        if common.args.raw:
+            pprint.pprint(response.json())
+            sys.exit(0)
+        response.raise_for_status()
+        res = response.json()
+
+        print("Alerts")
+        for alert_state, num_hosts in res['alerts']['summary'].items():
+            print('\t{0} - {1}'.format(alert_state, num_hosts))
+        print("Services")
+        for service in res['services']:
+            print("\t" + service['ServiceInfo']['service_name'])
+        print("Hosts")
+        for host in res['hosts']:
+            print("\t" + host['Hosts']['host_name'])
 
 def _destroy(parser, args):
     pass
