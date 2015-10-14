@@ -17,6 +17,7 @@ def command(parent_parser):
     subcommands = [
         cluster_ls,
         cluster_create,
+        cluster_show,
         ]
 
     subparsers = parser.add_subparsers()
@@ -57,4 +58,44 @@ def cluster_create(parent_parser):
     parser.add_argument(
         '--file',
         help="Specify a cluster creation template to use (default: stdin).")
+
+def cluster_show(parent_parser):
+    def show(client, args):
+        for cluster_name in args.clusters:
+            cluster_info = client.cluster.show(cluster_name, format=args.format)
+            if not client.raw:
+                if args.format is not None:
+                    print(json.dumps(cluster_info, indent=2))
+                else:
+                    print("Service Alerts")
+                    for alert_state, num_hosts in cluster_info['service_alerts'].items():
+                        print('\t{0} - {1}'.format(alert_state, num_hosts))
+
+                    print("Host Alerts")
+                    for alert_state, num_hosts in cluster_info['host_alerts'].items():
+                        print('\t{0} - {1}'.format(alert_state, num_hosts))
+
+                    print("Services")
+                    for service in cluster_info['services']:
+                        print("\t" + service)
+
+                    print("Hosts")
+                    for host_name, host_components in cluster_info['hosts'].items():
+                        print("\t" + host_name)
+                        for host_component in host_components:
+                            print("\t\t" + host_component)
+
+    parser = parent_parser.add_parser(
+        'show',
+        help=inspect.getdoc(Cluster.show))
+    parser.set_defaults(func=show)
+    parser.add_argument(
+        'clusters',
+        nargs='+',
+        help="Show basic information about cluster(s)")
+    parser.add_argument(
+        '-f',
+        '--format',
+        action='store',
+        help="Export cluster in specified format (e.g. blueprint)")
 
