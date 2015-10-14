@@ -137,7 +137,26 @@ def _destroy(parser, args):
         response.raise_for_status()
 
 def _start(parser, args):
-    pass
+    """Start all services in cluster"""
+    parser.add_argument(
+        'cluster',
+        nargs='+',
+        help="Cluster to start")
+    destroy_args, _ = parser.parse_known_args(args)
+    for cluster in destroy_args.cluster:
+        service_start_data = json.dumps({
+            "ServiceInfo": {
+                "state": "STARTED",
+            }
+        })
+        response = requests.put(
+            common.href('/api/v1/clusters/' + cluster + '/services'),
+            data=service_start_data,
+            **common.requests_opts())
+        if common.args.raw:
+            pprint.pprint(response.json())
+            sys.exit(0)
+        response.raise_for_status()
 
 def _stop(parser, args):
     pass
