@@ -82,3 +82,15 @@ class Cluster:
             '/api/v1/clusters/{name}/services'.format(name=cluster_name),
             data=service_start_data)
 
+    def stop(self, cluster_name):
+        """Stop all services in cluster"""
+        service_stop_data = json.dumps({
+            "ServiceInfo": {
+                "state": "INSTALLED",
+                }
+            })
+        self.client.request(
+            'put',
+            '/api/v1/clusters/{name}/services'.format(name=cluster_name),
+            data=service_stop_data)
+

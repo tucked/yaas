@@ -20,6 +20,7 @@ def command(parent_parser):
         cluster_show,
         cluster_destroy,
         cluster_start,
+        cluster_stop,
         ]
 
     subparsers = parser.add_subparsers()
@@ -127,5 +128,19 @@ def cluster_start(parent_parser):
     parser.add_argument(
         'clusters',
         nargs='+',
-        help="Remove cluster from ambari (requires cluster to be stopped)")
+        help="Start all services in cluster")
+
+def cluster_stop(parent_parser):
+    def stop(client, args):
+        for cluster_name in args.clusters:
+            client.cluster.stop(cluster_name)
+
+    parser = parent_parser.add_parser(
+        'stop',
+        help=inspect.getdoc(Cluster.stop))
+    parser.set_defaults(func=stop)
+    parser.add_argument(
+        'clusters',
+        nargs='+',
+        help="Stop all services in cluster")
 
