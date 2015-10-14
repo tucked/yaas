@@ -159,5 +159,24 @@ def _start(parser, args):
         response.raise_for_status()
 
 def _stop(parser, args):
-    pass
+    """Stop all services in cluster"""
+    parser.add_argument(
+        'cluster',
+        nargs='+',
+        help="Cluster to stop")
+    destroy_args, _ = parser.parse_known_args(args)
+    for cluster in destroy_args.cluster:
+        service_stop_data = json.dumps({
+            "ServiceInfo": {
+                "state": "INSTALLED",
+            }
+        })
+        response = requests.put(
+            common.href('/api/v1/clusters/' + cluster + '/services'),
+            data=service_stop_data,
+            **common.requests_opts())
+        if common.args.raw:
+            pprint.pprint(response.json())
+            sys.exit(0)
+        response.raise_for_status()
 
