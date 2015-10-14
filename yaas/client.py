@@ -36,6 +36,7 @@ class Client:
         self.debug = debug
 
         self.blueprint = Blueprint(self)
+        self.cluster = Cluster(self)
         self.host = Host(self)
         self.repo = Repo(self)
 
