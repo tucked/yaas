@@ -17,3 +17,10 @@ class Cluster:
         response = self.client.request('get', '/api/v1/clusters')
         return [item['Cluster']['cluster_name'] for item in response.json()['items']]
 
+    def create(self, cluster_name, template):
+        """ Create an Ambari hadoop cluster. """
+        self.client.request(
+                'post',
+                '/api/v1/clusters/{name}'.format(name=cluster_name),
+                data=json.dumps(template))
+

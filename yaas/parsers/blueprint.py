@@ -36,8 +36,8 @@ def blueprint_add(parent_parser):
             raw_blueprint = sys.stdin.read()
 
         client.blueprint.add(
-            blueprint=json.loads(raw_blueprint),
             blueprint_name=args.name,
+            blueprint=json.loads(raw_blueprint),
             validate_topology=args.validate_topology)
 
     parser = parent_parser.add_parser(
