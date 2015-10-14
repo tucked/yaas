@@ -70,3 +70,15 @@ class Cluster:
                 'delete',
                 '/api/v1/clusters/{name}'.format(name=cluster_name))
 
+    def start(self, cluster_name):
+        """Start all services in cluster"""
+        service_start_data = json.dumps({
+            "ServiceInfo": {
+                "state": "STARTED",
+                }
+            })
+        self.client.request(
+            'put',
+            '/api/v1/clusters/{name}/services'.format(name=cluster_name),
+            data=service_start_data)
+
