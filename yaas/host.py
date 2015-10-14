@@ -8,7 +8,7 @@ import pprint
 import requests
 import sys
 
-from . import config
+from . import common
 
 
 def command(parser, args):
@@ -26,24 +26,6 @@ def command(parser, args):
         extra)
 
 
-def print_field(k, v, indent=0):
-    k = str(k).replace('_', ' ')
-    if type(v) is dict:
-        print('{indent}{key}:'.format(indent=' '*indent, key=k))
-        for key, value in v.items():
-            print_field(k=key, v=value, indent=indent+4)
-    elif type(v) is list:
-        print('{indent}{key}:'.format(indent=' '*indent, key=k))
-        for i in range(len(v)):
-            print_field(k=i, v=v[i], indent=indent+4)
-    else:
-        print(
-            '{indent}{key}: {value}'.format(
-                indent=' '*indent,
-                key=k,
-                value=' '.join(v) if type(v) is list else v))
-
-
 def _list(parser, args):
     """ List all registered hosts. """
     parser.add_argument(
@@ -51,10 +33,10 @@ def _list(parser, args):
         help="Print host details.")
     subargs, extra = parser.parse_known_args(args)
     response = requests.get(
-        config.href('/api/v1/hosts'),
+        common.href('/api/v1/hosts'),
         params={'fields': subargs.fields},
-        **config.requests_opts())
-    if config.args.raw:
+        **common.requests_opts())
+    if common.args.raw:
         pprint.pprint(response.json())
         sys.exit(0)
     response.raise_for_status()
@@ -67,7 +49,7 @@ def _list(parser, args):
         print(' - '.join(line))
         for key, value in item['Hosts'].items():
             if key not in line_keys:
-                print_field(k=key, v=value, indent=4)
+                common.print_field(k=key, v=value, indent=4)
 
 
 def _show(parser, args):
@@ -80,9 +62,9 @@ def _show(parser, args):
     subargs, extra = parser.parse_known_args(args)
     for host_name in extra:
         response = requests.get(
-            config.href('/api/v1/hosts/{host}'.format(host=host_name)),
-            **config.requests_opts())
-        if config.args.raw:
+            common.href('/api/v1/hosts/{host}'.format(host=host_name)),
+            **common.requests_opts())
+        if common.args.raw:
             pprint.pprint(response.json())
             sys.exit(0)
         response.raise_for_status()
