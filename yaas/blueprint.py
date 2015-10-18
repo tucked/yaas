@@ -20,6 +20,7 @@ def command(parser, args):
         'add': _add,
         'list': _list,
         'remove': _remove,
+        'show': _show,
         }
     for name, fn in subcommands.items():
         subparsers.add_parser(name, help=inspect.getdoc(fn))
@@ -88,3 +89,49 @@ def _remove(parser, args):
         response = requests.delete(
             config.href('/api/v1/blueprints/{name}'.format(name=name)),
             **config.requests_opts())
+
+
+def _show(parser, args):
+    """ Show a blueprint. """
+    parser.add_argument(
+        '--fields',
+        help="Print blueprint details.")
+    parser.add_argument(
+        'name',
+        nargs='+',
+        help="Specify a blueprint to show.")
+    subargs = parser.parse_args(args)
+    for name in subargs.name:
+        response = requests.get(
+            config.href('/api/v1/blueprints/{name}'.format(name=name)),
+            params={'fields': subargs.fields},
+            **config.requests_opts())
+        if config.args.raw:
+            pprint.pprint(response.json())
+            continue
+        response.raise_for_status()
+        blueprint = response.json()
+        print(
+            '{name}{stack}'.format(
+                name=blueprint['Blueprints']['blueprint_name'],
+                stack=' ({name} {version})'.format(
+                    name=blueprint['Blueprints']['stack_name'],
+                    version=blueprint['Blueprints']['stack_version'])
+                    if 'stack_name' in blueprint['Blueprints'] else ''))
+        if subargs.fields is not None:
+            del blueprint['Blueprints']
+            for key, value in blueprint.items():
+                if key != 'href':
+                    config.print_field(k=key, v=value, indent=4)
+            continue
+        for host_group in blueprint['host_groups']:
+            print(
+                '\n{indent}{cardinality} x "{name}"'.format(
+                    indent=' '*4,
+                    name=host_group['name'],
+                    cardinality=host_group['cardinality']))
+            for component in sorted(host_group['components']):
+                print(
+                    '{indent}{name}'.format(
+                        indent=' '*4*2,
+                        name=component['name']))
