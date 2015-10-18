@@ -121,7 +121,20 @@ def _show(parser, args):
             print("\t" + host['Hosts']['host_name'])
 
 def _destroy(parser, args):
-    pass
+    """Delete cluster from ambari. Requires all services in cluster to be stopped"""
+    parser.add_argument(
+        'cluster',
+        nargs='+',
+        help="Remove cluster from ambari (requires cluster to be stopped)")
+    destroy_args, _ = parser.parse_known_args(args)
+    for cluster in destroy_args.cluster:
+        response = requests.delete(
+            common.href('/api/v1/clusters/' + cluster),
+            **common.requests_opts())
+        if common.args.raw:
+            pprint.pprint(response.json())
+            sys.exit(0)
+        response.raise_for_status()
 
 def _start(parser, args):
     pass
