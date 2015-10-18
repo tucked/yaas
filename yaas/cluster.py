@@ -64,3 +64,9 @@ class Cluster:
             utils.remove_hrefs(raw_resp)
             return raw_resp
 
+    def destroy(self, cluster_name):
+        """Delete cluster from ambari. Requires all services in cluster to be stopped"""
+        self.client.request(
+                'delete',
+                '/api/v1/clusters/{name}'.format(name=cluster_name))
+

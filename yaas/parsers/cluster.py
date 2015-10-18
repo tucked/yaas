@@ -18,6 +18,7 @@ def command(parent_parser):
         cluster_ls,
         cluster_create,
         cluster_show,
+        cluster_destroy,
         ]
 
     subparsers = parser.add_subparsers()
@@ -98,4 +99,18 @@ def cluster_show(parent_parser):
         '--format',
         action='store',
         help="Export cluster in specified format (e.g. blueprint)")
+
+def cluster_destroy(parent_parser):
+    def destroy(client, args):
+        for cluster_name in args.clusters:
+            client.cluster.destroy(cluster_name)
+
+    parser = parent_parser.add_parser(
+        'destroy',
+        help=inspect.getdoc(Cluster.destroy))
+    parser.set_defaults(func=destroy)
+    parser.add_argument(
+        'cluster',
+        nargs='+',
+        help="Remove cluster from ambari (requires cluster to be stopped)")
 
