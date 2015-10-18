@@ -19,6 +19,7 @@ def command(parser, args):
     subcommands = {
         'add': _add,
         'list': _list,
+        'remove': _remove,
         }
     for name, fn in subcommands.items():
         subparsers.add_parser(name, help=inspect.getdoc(fn))
@@ -74,3 +75,16 @@ def _list(parser, args):
         for key, value in item.items():
             if key != 'href':
                 config.print_field(k=key, v=value, indent=4)
+
+
+def _remove(parser, args):
+    """ Remove a blueprint form the server. """
+    parser.add_argument(
+        'name',
+        nargs='+',
+        help="Specify a blueprint to add to the Ambari server.")
+    subargs = parser.parse_args(args)
+    for name in subargs.name:
+        response = requests.delete(
+            config.href('/api/v1/blueprints/{name}'.format(name=name)),
+            **config.requests_opts())
