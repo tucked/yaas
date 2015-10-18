@@ -125,7 +125,6 @@ WARNING: You have not specified enough hosts to satisfy the blueprint.
 ```
 $ yaas cluster create cluster1 --template=template1.json
 $ cat template2.json | yaas cluster create cluster2
-$ yaas cluster create cluster3
 ```
 
 ###### Options
@@ -136,30 +135,73 @@ $ yaas cluster create cluster3
 
 ```
 $ yaas cluster list
-cluster1
-cluster2
-cluster3
+cluster1 - HDP-2.3.0.0
+cluster2 - HDP-2.3.2.0
+cluster3 - HDP-2.2.6.0
+$ yaas cluster list --fields=alerts
+TODO
 ```
+
+
+###### Options
+
+* --fields
 
 ##### show
 
 ```
-$ yaas cluster show cluster1 --format=blueprint > blueprint1.json
-$ yaas cluster show cluster2
-...
+$ yaas cluster show cluster1
+Alerts
+  PASSIVE - 0
+  CRITICAL - 2
+  OK - 3
+  WARNING - 0
+Services
+  GANGLIA
+  HBASE
+  HDFS
+  HIVE
+  KNOX
+  MAPREDUCE2
+  NAGIOS
+  OOZIE
+  PIG
+  YARN
+  ZOOKEEPER
+Hosts
+  host1.com
+  host2.com
+  host3.com
+  host4.com
+  host5.com
 ```
 
-###### Options
-
+###### options
 * --format
+
+```
+$ yaas cluster show --format=blueprint cluster2 > exportedblueprint.json
+```
 
 ##### destroy
 
 ```
 $ yaas cluster destroy cluster2
 $ yaas cluster list
-cluster1
-cluster3
+cluster1 - HDP-2.3.0.0
+cluster3 - HDP-2.2.6.0
+```
+
+##### start
+
+```
+$ yaas cluster start cluster2
+```
+
+##### stop
+
+```
+$ yaas cluster stop cluster2
 ```
 
 #### host
