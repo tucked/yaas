@@ -16,6 +16,7 @@ from . import host
 from . import repo
 from . import service
 from . import task
+from . import template
 
 YAAS_VERSION = "yaas version {0}".format(__version__)
 
@@ -62,6 +63,7 @@ def main():
         'repo': repo.command,
         'service': service.command,
         'task': task.command,
+        'template': template.command,
         'host': host.command,
         }
 
