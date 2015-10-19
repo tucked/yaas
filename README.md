@@ -272,8 +272,8 @@ $ yaas repo remove HDP 2.2
 
 ##### create
 
+Generate a cluster creation template.
+
 ```
-$ yaas template create [--blueprint=blueprint1] [--host_group=host1.example.com ...] > template1.json
-$ cat clueprint2.json | yaas template create [--host_group=host1.example.com ...] > template2.json
-WARNING: You have not specified enough hosts to satisfy the blueprint.
+$ yaas template create --blueprint=blueprint1 host_group:host1,host2 ...
 ```
