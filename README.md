@@ -141,6 +141,37 @@ blueprint1
 blueprint3
 ```
 
+#### bootstrap
+
+##### agents
+
+`POST /api/v1/bootstrap`
+
+Set up hosts as Ambari agents pointing at YAAS_SERVER.
+
+```
+$ yaas bootstrap agents -k id_rsa -u root --userRunAs root host1.example.com.
+Request 1 OK Running Bootstrap now.
+```
+
+##### show
+
+`GET /api/v1/bootstrap/:id`
+
+Show the status of a bootstrap request.
+
+```
+$ yaas bootstrap show 1
+Request 1 SUCCESS
+    host1.example.com DONE (status: 0)
+```
+
+###### Options
+
+* --log
+
+  Show bootstrap logs for each host.
+
 #### cluster
 
 ##### create
