@@ -61,7 +61,7 @@ def _list(parser, args):
     parser.add_argument(
         '--fields',
         help="Print blueprint details.")
-    subargs = parser.parses_args(args)
+    subargs = parser.parse_args(args)
     response = requests.get(
         config.href('/api/v1/blueprints'),
         params={'fields': subargs.fields},
