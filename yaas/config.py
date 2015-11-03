@@ -3,6 +3,8 @@
 from __future__ import absolute_import
 from __future__ import print_function
 
+import pprint
+
 # These default configs are overriden by environment variables.
 scheme = 'http'
 server = 'localhost'
@@ -33,8 +35,10 @@ def print_field(k, v, indent=0):
 
 
 def print_request_and_response(res, *args, **kwargs):
-    print("Request:", res.request.__dict__)
-    print("Response:", res.__dict__)
+    print('Request:')
+    pprint.pprint(res.request.__dict__)
+    print('Response:')
+    pprint.pprint(res.__dict__)
 
 
 def requests_opts():
