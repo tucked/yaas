@@ -12,6 +12,26 @@ password = 'admin'
 args = None
 
 
+def print_field(k, v, indent=0):
+    k = str(k).replace('_', ' ')
+    if not v:
+        return
+    elif type(v) is dict:
+        print('{indent}{key}'.format(indent=' '*indent, key=k))
+        for key, value in v.items():
+            print_field(k=key, v=value, indent=indent+4)
+    elif type(v) is list:
+        print('{indent}{key}'.format(indent=' '*indent, key=k))
+        for i in range(len(v)):
+            print_field(k=i, v=v[i], indent=indent+4)
+    else:
+        print(
+            '{indent}{key}: {value}'.format(
+                indent=' '*indent,
+                key=k,
+                value=v))
+
+
 def print_request_and_response(res, *args, **kwargs):
     print("Request:", res.request.__dict__)
     print("Response:", res.__dict__)
