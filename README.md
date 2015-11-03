@@ -78,12 +78,28 @@ $ env YAAS_SERVER=ambari.example.com yaas ...
 
 ##### add
 
+`POST /api/v1/blueprints/:name`
+
+Store a blueprint on `YAAS_SERVER`.
+
 ```
 $ yaas blueprint add blueprint1.json blueprint2.json
 $ cat blueprint3.json | yaas blueprint add
 ```
 
+###### Options
+
+* --validate-topology
+
+  `POST /api/v1/blueprints/:name?validate_topology=...`
+
+  Toggle topology validation.
+
 ##### list
+
+`GET /api/v1/blueprints`
+
+Show blueprints that are stored on `YAAS_SERVER`.
 
 ```
 $ yaas blueprint list
@@ -94,28 +110,35 @@ blueprint3
 
 * Note: This will list the name of the actual Blueprint (as specified inside the JSON file) which may differ from the file name.
 
+###### Options
+
+* --fields
+
+  `GET /api/v1/blueprints?fields=...`
+
+  Add blueprint details to the list.
+
 ##### show
+
+`GET /api/v1/blueprints/:name`
+
+Show details about a blueprint stored on `YAAS_SERVER`.
 
 ```
 $ yaas blueprint show blueprint1
-...
 ```
 
 ##### remove
+
+`DELETE /api/v1/blueprints/:name`
+
+Remove a blueprint stored on `YAAS_SERVER`.
 
 ```
 $ yaas blueprint remove blueprint2
 $ yaas blueprint list
 blueprint1
 blueprint3
-```
-
-##### template
-
-```
-$ yaas blueprint template blueprint1 [--host_group=host1.example.com ...] > template1.json
-$ yaas blueprint template blueprint2.json [--host_group=host1.example.com ...] > template2.json
-WARNING: You have not specified enough hosts to satisfy the blueprint.
 ```
 
 #### cluster
@@ -243,4 +266,14 @@ $ yaas repo set [--verify-baseurls=true] repo-changed.json
 
 ```
 $ yaas repo remove HDP 2.2
+```
+
+#### template
+
+##### create
+
+```
+$ yaas template create [--blueprint=blueprint1] [--host_group=host1.example.com ...] > template1.json
+$ cat clueprint2.json | yaas template create [--host_group=host1.example.com ...] > template2.json
+WARNING: You have not specified enough hosts to satisfy the blueprint.
 ```
