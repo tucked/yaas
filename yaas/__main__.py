@@ -11,7 +11,7 @@ import os
 from . import __version__
 from . import blueprint
 from . import cluster
-from . import config
+from . import common
 from . import host
 from . import repo
 from . import service
@@ -26,11 +26,11 @@ def version(parser, args):
 
 
 def main():
-    config.scheme = os.environ.get('YAAS_SCHEME', config.scheme)
-    config.server = os.environ.get('YAAS_SERVER', config.server)
-    config.port = os.environ.get('YAAS_PORT', config.port)
-    config.username = os.environ.get('YAAS_USER', config.username)
-    config.password = os.environ.get('YAAS_PASSWORD', config.password)
+    common.scheme = os.environ.get('YAAS_SCHEME', common.scheme)
+    common.server = os.environ.get('YAAS_SERVER', common.server)
+    common.port = os.environ.get('YAAS_PORT', common.port)
+    common.username = os.environ.get('YAAS_USER', common.username)
+    common.password = os.environ.get('YAAS_PASSWORD', common.password)
 
     parser = argparse.ArgumentParser(prog="yaas")
 
@@ -69,13 +69,13 @@ def main():
         subparsers.add_parser(name, help=inspect.getdoc(fn))
 
     args, extra = parser.parse_known_args(sys.argv[1:])
-    config.args = args
+    common.args = args
 
     try:
         commands[args.command](subparsers.choices[args.command], extra)
     except requests.exceptions.ConnectionError:
         print(
-            'Ambari is not accessible at {url}.'.format(url=config.href('/')),
+            'Ambari is not accessible at {url}.'.format(url=common.href('/')),
             'Use YAAS_SCHEME, YAAS_SERVER, and YAAS_PORT to correct.',
             file=sys.stderr)
         sys.exit(1)

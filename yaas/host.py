@@ -8,7 +8,7 @@ import pprint
 import requests
 import sys
 
-from . import config
+from . import common
 
 
 def command(parser, args):
@@ -51,10 +51,10 @@ def _list(parser, args):
         help="Print host details.")
     subargs, extra = parser.parse_known_args(args)
     response = requests.get(
-        config.href('/api/v1/hosts'),
+        common.href('/api/v1/hosts'),
         params={'fields': subargs.fields},
-        **config.requests_opts())
-    if config.args.raw:
+        **common.requests_opts())
+    if common.args.raw:
         pprint.pprint(response.json())
         sys.exit(0)
     response.raise_for_status()
@@ -80,9 +80,9 @@ def _show(parser, args):
     subargs, extra = parser.parse_known_args(args)
     for host_name in extra:
         response = requests.get(
-            config.href('/api/v1/hosts/{host}'.format(host=host_name)),
-            **config.requests_opts())
-        if config.args.raw:
+            common.href('/api/v1/hosts/{host}'.format(host=host_name)),
+            **common.requests_opts())
+        if common.args.raw:
             pprint.pprint(response.json())
             sys.exit(0)
         response.raise_for_status()

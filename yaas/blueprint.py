@@ -10,7 +10,7 @@ import pprint
 import requests
 import sys
 
-from . import config
+from . import common
 
 
 def command(parser, args):
@@ -47,12 +47,12 @@ def _add(parser, args):
     for blueprint in blueprints:
         blueprint = json.loads(blueprint)
         response = requests.post(
-            config.href(
+            common.href(
                 '/api/v1/blueprints/{name}'.format(
                     name=blueprint['Blueprints']['blueprint_name'])),
             data=json.dumps(blueprint),  # `json=blueprint` would be better, but it doesn't work!
             params={'validate_topology': subargs.validate_topology},
-            **config.requests_opts())
+            **common.requests_opts())
         response.raise_for_status()
 
 
@@ -63,10 +63,10 @@ def _list(parser, args):
         help="Print blueprint details.")
     subargs = parser.parse_args(args)
     response = requests.get(
-        config.href('/api/v1/blueprints'),
+        common.href('/api/v1/blueprints'),
         params={'fields': subargs.fields},
-        **config.requests_opts())
-    if config.args.raw:
+        **common.requests_opts())
+    if common.args.raw:
         pprint.pprint(response.json())
         sys.exit(0)
     response.raise_for_status()
@@ -75,7 +75,7 @@ def _list(parser, args):
         del item['Blueprints']['blueprint_name']
         for key, value in item.items():
             if key != 'href':
-                config.print_field(k=key, v=value, indent=4)
+                common.print_field(k=key, v=value, indent=4)
 
 
 def _remove(parser, args):
@@ -87,8 +87,8 @@ def _remove(parser, args):
     subargs = parser.parse_args(args)
     for name in subargs.name:
         response = requests.delete(
-            config.href('/api/v1/blueprints/{name}'.format(name=name)),
-            **config.requests_opts())
+            common.href('/api/v1/blueprints/{name}'.format(name=name)),
+            **common.requests_opts())
 
 
 def _show(parser, args):
@@ -103,10 +103,10 @@ def _show(parser, args):
     subargs = parser.parse_args(args)
     for name in subargs.name:
         response = requests.get(
-            config.href('/api/v1/blueprints/{name}'.format(name=name)),
+            common.href('/api/v1/blueprints/{name}'.format(name=name)),
             params={'fields': subargs.fields},
-            **config.requests_opts())
-        if config.args.raw:
+            **common.requests_opts())
+        if common.args.raw:
             pprint.pprint(response.json())
             continue
         response.raise_for_status()
@@ -122,7 +122,7 @@ def _show(parser, args):
             del blueprint['Blueprints']
             for key, value in blueprint.items():
                 if key != 'href':
-                    config.print_field(k=key, v=value, indent=4)
+                    common.print_field(k=key, v=value, indent=4)
             continue
         for host_group in blueprint['host_groups']:
             print(
