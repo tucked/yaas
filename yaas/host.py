@@ -15,8 +15,8 @@ def command(parser, args):
     """ Interact with registered hosts. """
     subparsers = parser.add_subparsers(dest='subcommand')
     subcommands = {
-        'list': _list,
-        'show': _show,
+        'ls': ls,
+        'show': show,
         }
     for name, fn in subcommands.items():
         subparsers.add_parser(name, help=inspect.getdoc(fn))
@@ -26,25 +26,7 @@ def command(parser, args):
         extra)
 
 
-def print_field(k, v, indent=0):
-    k = str(k).replace('_', ' ')
-    if type(v) is dict:
-        print('{indent}{key}:'.format(indent=' '*indent, key=k))
-        for key, value in v.items():
-            print_field(k=key, v=value, indent=indent+4)
-    elif type(v) is list:
-        print('{indent}{key}:'.format(indent=' '*indent, key=k))
-        for i in range(len(v)):
-            print_field(k=i, v=v[i], indent=indent+4)
-    else:
-        print(
-            '{indent}{key}: {value}'.format(
-                indent=' '*indent,
-                key=k,
-                value=' '.join(v) if type(v) is list else v))
-
-
-def _list(parser, args):
+def ls(parser, args):
     """ List all registered hosts. """
     parser.add_argument(
         '--fields',
@@ -67,10 +49,10 @@ def _list(parser, args):
         print(' - '.join(line))
         for key, value in item['Hosts'].items():
             if key not in line_keys:
-                print_field(k=key, v=value, indent=4)
+                common.print_field(k=key, v=value, indent=4)
 
 
-def _show(parser, args):
+def show(parser, args):
     """ Show registered host info. """
     parser.add_argument(
         '--hardware',

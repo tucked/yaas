@@ -17,10 +17,10 @@ def command(parser, args):
     """ Interact with Ambari blueprints. """
     subparsers = parser.add_subparsers(dest='subcommand')
     subcommands = {
-        'add': _add,
-        'list': _list,
-        'remove': _remove,
-        'show': _show,
+        'add': add,
+        'ls': ls,
+        'rm': rm,
+        'show': show,
         }
     for name, fn in subcommands.items():
         subparsers.add_parser(name, help=inspect.getdoc(fn))
@@ -30,7 +30,7 @@ def command(parser, args):
         extra)
 
 
-def _add(parser, args):
+def add(parser, args):
     """ Add a blueprint to the Ambari server. """
     parser.add_argument(
         '--validate-topology',
@@ -56,7 +56,7 @@ def _add(parser, args):
         response.raise_for_status()
 
 
-def _list(parser, args):
+def ls(parser, args):
     """ List all blueprints stored on the Ambari server. """
     parser.add_argument(
         '--fields',
@@ -78,7 +78,7 @@ def _list(parser, args):
                 common.print_field(k=key, v=value, indent=4)
 
 
-def _remove(parser, args):
+def rm(parser, args):
     """ Remove a blueprint form the server. """
     parser.add_argument(
         'name',
@@ -91,7 +91,7 @@ def _remove(parser, args):
             **common.requests_opts())
 
 
-def _show(parser, args):
+def show(parser, args):
     """ Show a blueprint. """
     parser.add_argument(
         '--fields',
