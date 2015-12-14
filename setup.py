@@ -13,7 +13,7 @@ setuptools.setup(
     license='MIT',
     description="Yet Another Ambari Shell",
     url="https://github.com/dmtucker/yaas",
-    packages=['yaas'],
+    packages=setuptools.find_packages(),
     entry_points={ 'console_scripts': [ "yaas = yaas.__main__:main" ] }
     )
 

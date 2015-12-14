@@ -9,31 +9,19 @@ import sys
 import os
 
 from . import __version__
-from . import blueprint
-from . import cluster
-from . import common
-from . import host
-from . import repo
-from . import service
-from . import task
+from . import config
+from . import parsers
 
 YAAS_VERSION = "yaas version {0}".format(__version__)
 
 
-def version(parser, args):
+def version(args):
     """ Print the version. """
     print(YAAS_VERSION)
 
 
 def main():
-    common.scheme = os.environ.get('YAAS_SCHEME', common.scheme)
-    common.server = os.environ.get('YAAS_SERVER', common.server)
-    common.port = os.environ.get('YAAS_PORT', common.port)
-    common.username = os.environ.get('YAAS_USER', common.username)
-    common.password = os.environ.get('YAAS_PASSWORD', common.password)
-
     parser = argparse.ArgumentParser(prog="yaas")
-
     parser.add_argument(
         '-v',
         '--version',
@@ -44,38 +32,52 @@ def main():
     parser.add_argument(
         '--raw',
         action='store_true',
-        default=False,
+        default=None,
         help="Print the raw Ambari response.")
 
     parser.add_argument(
         '--debug',
         action='store_true',
-        default=False,
+        default=None,
         help="Print Ambari requests and responses.")
 
-    subparsers = parser.add_subparsers(dest="command")
+    subparsers = parser.add_subparsers()
+    commands = [
+        parsers.blueprint,
+        parsers.cluster,
+        parsers.repo,
+        parsers.service,
+        parsers.task,
+        parsers.host,
+        ]
 
-    commands = {
-        'version' : version,
-        'blueprint': blueprint.command,
-        'cluster': cluster.command,
-        'repo': repo.command,
-        'service': service.command,
-        'task': task.command,
-        'host': host.command,
-        }
+    for command in commands:
+      command.define_subcommand(subparsers)
 
-    for name, fn in commands.items():
-        subparsers.add_parser(name, help=inspect.getdoc(fn))
+    version_parser = subparsers.add_parser(
+        'version',
+        help=inspect.getdoc(version))
+    version_parser.set_defaults(func=version)
 
-    args, extra = parser.parse_known_args(sys.argv[1:])
-    common.args = args
+    args = parser.parse_args()
+
+    # Leverage defaults unless overriden by environment variables
+    # or command line prameters
+    config.scheme = os.environ.get('YAAS_SCHEME', config.scheme)
+    config.server = os.environ.get('YAAS_SERVER', config.server)
+    config.port = os.environ.get('YAAS_PORT', config.port)
+    config.username = os.environ.get('YAAS_USER', config.username)
+    config.password = os.environ.get('YAAS_PASSWORD', config.password)
+    if args.raw is not None:
+        config.raw = args.raw
+    if args.debug is not None:
+        config.debug = args.debug
 
     try:
-        commands[args.command](subparsers.choices[args.command], extra)
+        args.func(args)
     except requests.exceptions.ConnectionError:
         print(
-            'Ambari is not accessible at {url}.'.format(url=common.href('/')),
+            'Ambari is not accessible at {url}.'.format(url=config.href('/')),
             'Use YAAS_SCHEME, YAAS_SERVER, and YAAS_PORT to correct.',
             file=sys.stderr)
         sys.exit(1)
