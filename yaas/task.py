@@ -1,4 +1,4 @@
 # coding: utf-8
 
-def command(parser, args):
+class Task:
     pass

@@ -7,14 +7,13 @@ import inspect
 import json
 import sys
 
-from .. import blueprint
-from .. import config
+from ..blueprint import Blueprint
 from .. import utils
 
-def define_subcommand(parent_parser):
+def command(parent_parser):
     parser = parent_parser.add_parser(
         'blueprint',
-        help=inspect.getdoc(blueprint))
+        help=inspect.getdoc(Blueprint))
 
     subcommands = [
         blueprint_add,
@@ -28,7 +27,7 @@ def define_subcommand(parent_parser):
         subcommand(subparsers)
 
 def blueprint_add(parent_parser):
-    def add(args):
+    def add(client, args):
         raw_blueprint = None
         if args.file:
             with open(args.file, 'r') as f:
@@ -36,14 +35,14 @@ def blueprint_add(parent_parser):
         else:
             raw_blueprint = sys.stdin.read()
 
-        blueprint.add(
+        client.blueprint.add(
             blueprint=json.loads(raw_blueprint),
             blueprint_name=args.name,
             validate_topology=args.validate_topology)
 
     parser = parent_parser.add_parser(
         'add',
-        help=inspect.getdoc(blueprint.add))
+        help=inspect.getdoc(Blueprint.add))
     parser.set_defaults(func=add)
     parser.add_argument(
         'name',
@@ -56,25 +55,25 @@ def blueprint_add(parent_parser):
         help="Specify a blueprint to add to the Ambari server.")
 
 def blueprint_ls(parent_parser):
-    def ls(args):
-        bps = blueprint.ls()
-        if not config.raw:
+    def ls(client, args):
+        bps = client.blueprint.ls()
+        if not client.raw:
             for bp_name in bps:
                 print('{name}'.format(name=bp_name))
 
     parser = parent_parser.add_parser(
         'ls',
-        help=inspect.getdoc(blueprint.ls))
+        help=inspect.getdoc(Blueprint.ls))
     parser.set_defaults(func=ls)
 
 def blueprint_rm(parent_parser):
-    def rm(args):
+    def rm(client, args):
         for name in args.name:
-            blueprint.rm(name)
+            client.blueprint.rm(name)
 
     parser = parent_parser.add_parser(
         'rm',
-        help=inspect.getdoc(blueprint.rm))
+        help=inspect.getdoc(Blueprint.rm))
     parser.set_defaults(func=rm)
     parser.add_argument(
         'name',
@@ -82,10 +81,10 @@ def blueprint_rm(parent_parser):
         help="Specify a blueprint to add to the Ambari server.")
 
 def blueprint_show(parent_parser):
-    def show(args):
+    def show(client, args):
         for name in args.name:
-            res = blueprint.show(name)
-            if not config.raw:
+            res = client.blueprint.show(name)
+            if not client.raw:
                 print(
                     '{name} {stack}'.format(
                         name=res['Blueprints']['blueprint_name'],
@@ -106,7 +105,7 @@ def blueprint_show(parent_parser):
 
     parser = parent_parser.add_parser(
         'show',
-        help=inspect.getdoc(blueprint.show))
+        help=inspect.getdoc(Blueprint.show))
     parser.set_defaults(func=show)
     parser.add_argument(
         'name',

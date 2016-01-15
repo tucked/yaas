@@ -5,14 +5,13 @@ from __future__ import print_function
 
 import inspect
 
-from .. import cluster
-from .. import config
+from ..cluster import Cluster
 from .. import utils
 
-def define_subcommand(parent_parser):
+def command(parent_parser):
   parser = parent_parser.add_parser(
       'cluster',
-      help=inspect.getdoc(cluster))
+      help=inspect.getdoc(Cluster))
 
   subcommands = [
       ]

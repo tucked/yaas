@@ -5,14 +5,13 @@ from __future__ import print_function
 
 import inspect
 
-from .. import host
-from .. import config
+from ..host import Host
 from .. import utils
 
-def define_subcommand(parent_parser):
+def command(parent_parser):
   parser = parent_parser.add_parser(
       'host',
-      help=inspect.getdoc(host))
+      help=inspect.getdoc(Host))
 
   subcommands = [
       host_ls,
@@ -24,21 +23,21 @@ def define_subcommand(parent_parser):
       subcommand(subparsers)
 
 def host_ls(parent_parser):
-    def ls(args):
-        host_list = host.ls()
-        if not config.raw:
+    def ls(client, args):
+        host_list = client.host.ls()
+        if not client.raw:
             for host_name in host_list:
                 print('{name}'.format(name=host_name))
     parser = parent_parser.add_parser(
         'ls',
-        help=inspect.getdoc(host.ls))
+        help=inspect.getdoc(Host.ls))
     parser.set_defaults(func=ls)
 
 def host_show(parent_parser):
-    def show(args):
+    def show(client, args):
         for host_name in args.hosts:
-            host_info = host.show(host_name)
-            if not config.raw:
+            host_info = client.host.show(host_name)
+            if not client.raw:
                 print(
                     '[{state}] {host} ({ip}) - {status}'.format(
                         host=host_info['Hosts']['host_name'],
@@ -75,7 +74,7 @@ def host_show(parent_parser):
 
     parser = parent_parser.add_parser(
         'show',
-        help=inspect.getdoc(host.show))
+        help=inspect.getdoc(Host.show))
     parser.set_defaults(func=show)
     parser.add_argument(
         '--hardware',

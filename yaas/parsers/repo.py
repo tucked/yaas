@@ -5,14 +5,13 @@ from __future__ import print_function
 
 import inspect
 
-from .. import repo
-from .. import config
+from ..repo import Repo
 from .. import utils
 
-def define_subcommand(parent_parser):
+def command(parent_parser):
   parser = parent_parser.add_parser(
       'repo',
-      help=inspect.getdoc(repo))
+      help=inspect.getdoc(Repo))
 
   subcommands = [
       ]

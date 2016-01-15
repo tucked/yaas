@@ -9,7 +9,7 @@ import sys
 import os
 
 from . import __version__
-from . import config
+from .client import Client
 from . import parsers
 
 YAAS_VERSION = "yaas version {0}".format(__version__)
@@ -32,13 +32,13 @@ def main():
     parser.add_argument(
         '--raw',
         action='store_true',
-        default=None,
+        default=False,
         help="Print the raw Ambari response.")
 
     parser.add_argument(
         '--debug',
         action='store_true',
-        default=None,
+        default=False,
         help="Print Ambari requests and responses.")
 
     subparsers = parser.add_subparsers()
@@ -52,7 +52,7 @@ def main():
         ]
 
     for command in commands:
-      command.define_subcommand(subparsers)
+      command.command(subparsers)
 
     version_parser = subparsers.add_parser(
         'version',
@@ -63,21 +63,27 @@ def main():
 
     # Leverage defaults unless overriden by environment variables
     # or command line prameters
-    config.scheme = os.environ.get('YAAS_SCHEME', config.scheme)
-    config.server = os.environ.get('YAAS_SERVER', config.server)
-    config.port = os.environ.get('YAAS_PORT', config.port)
-    config.username = os.environ.get('YAAS_USER', config.username)
-    config.password = os.environ.get('YAAS_PASSWORD', config.password)
-    if args.raw is not None:
-        config.raw = args.raw
-    if args.debug is not None:
-        config.debug = args.debug
+    kwargs = {}
+    if 'YAAS_SCHEME' in os.environ:
+        kwargs['scheme'] = os.environ.get('YAAS_SCHEME')
+    if 'YAAS_SERVER' in os.environ:
+        kwargs['server'] = os.environ.get('YAAS_SERVER')
+    if 'YAAS_PORT' in os.environ:
+        kwargs['port'] = os.environ.get('YAAS_PORT')
+    if 'YAAS_USER' in os.environ:
+        kwargs['user'] = os.environ.get('YAAS_USER')
+    if 'YAAS_PASSWORD' in os.environ:
+        kwargs['password'] = os.environ.get('YAAS_PASSWORD')
+    kwargs['raw'] = args.raw
+    kwargs['debug'] = args.debug
+
+    client = Client(**kwargs)
 
     try:
-        args.func(args)
+        args.func(client, args)
     except requests.exceptions.ConnectionError:
         print(
-            'Ambari is not accessible at {url}.'.format(url=config.href('/')),
+            'Ambari is not accessible at {url}.'.format(url=client._href('/')),
             'Use YAAS_SCHEME, YAAS_SERVER, and YAAS_PORT to correct.',
             file=sys.stderr)
         sys.exit(1)

@@ -5,14 +5,13 @@ from __future__ import print_function
 
 import inspect
 
-from .. import task
-from .. import config
+from ..task import Task
 from .. import utils
 
-def define_subcommand(parent_parser):
+def command(parent_parser):
   parser = parent_parser.add_parser(
       'task',
-      help=inspect.getdoc(task))
+      help=inspect.getdoc(Task))
 
   subcommands = [
       ]

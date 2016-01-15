@@ -5,14 +5,13 @@ from __future__ import print_function
 
 import inspect
 
-from .. import service
-from .. import config
+from ..service import Service
 from .. import utils
 
-def define_subcommand(parent_parser):
+def command(parent_parser):
   parser = parent_parser.add_parser(
       'service',
-      help=inspect.getdoc(service))
+      help=inspect.getdoc(Service))
 
   subcommands = [
       ]
