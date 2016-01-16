@@ -37,6 +37,7 @@ class Client:
 
         self.blueprint = Blueprint(self)
         self.host = Host(self)
+        self.repo = Repo(self)
 
     def request(self, method, path, *args, **kwargs):
         """
