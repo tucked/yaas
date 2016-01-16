@@ -10,12 +10,12 @@ from . import utils
 class Blueprint:
     """ Interact with Ambari blueprints. """
 
-    def __init__(self, config):
-        self.config = config
+    def __init__(self, client):
+        self.client = client
 
     def add(self, blueprint, blueprint_name, validate_topology=True):
         """ Add a blueprint to the Ambari server. """
-        self.config.request(
+        self.client.request(
             'post',
             '/api/v1/blueprints/{name}'.format(name=blueprint_name),
             data=json.dumps(blueprint),  # `json=blueprint` would be better, but it doesn't work!
@@ -23,19 +23,19 @@ class Blueprint:
 
     def ls(self):
         """ List all blueprints stored on the Ambari server. """
-        response = self.config.request('get', '/api/v1/blueprints')
+        response = self.client.request('get', '/api/v1/blueprints')
         return [item['Blueprints']['blueprint_name'] for item in response.json()['items']]
 
 
     def rm(self, blueprint_name):
         """ Remove a blueprint form the server. """
-        self.config.request(
+        self.client.request(
             'delete',
             '/api/v1/blueprints/{name}'.format(name=blueprint_name))
 
     def show(self, blueprint_name):
         """ Show a blueprint. """
-        response = self.config.request(
+        response = self.client.request(
             'get',
             '/api/v1/blueprints/{name}'.format(name=blueprint_name))
         raw_blueprint = response.json()
