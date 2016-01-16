@@ -6,12 +6,12 @@ from . import utils
 class Repo:
     """ Interact with Ambari stack repository configurations. """
 
-    def __init__(self, config):
-        self.config = config
+    def __init__(self, client):
+        self.client = client
 
     def ls(self):
         """ List all configured repositories. """
-        response = self.config.request(
+        response = self.client.request(
             'get',
             '/api/v1/stacks',
             params={'fields': 'versions/repository_versions/operating_systems/repositories/*'})
@@ -36,7 +36,7 @@ class Repo:
 
     def show(self, stack_name, stack_version, repo_id):
         """ List all configured repositories. """
-        response = self.config.request(
+        response = self.client.request(
             'get',
             '/api/v1/stacks/{0}/versions/{1}/repository_versions/{2}?fields=operating_systems/repositories/*'.format(
                 stack_name, stack_version, repo_id))
@@ -46,21 +46,21 @@ class Repo:
 
     def rm(self, stack_name, stack_version, repo_id):
         """ Delete specified repository. """
-        response = self.config.request(
+        response = self.client.request(
             'delete',
             '/api/v1/stacks/{0}/versions/{1}/repository_versions/{2}'.format(
                 stack_name, stack_version, repo_id))
 
     def update(self, stack_name, stack_version, repo_id, repo):
         """ Update the specified repository. """
-        response = self.config.request(
+        response = self.client.request(
             'put',
             '/api/v1/stacks/{0}/versions/{1}/repository_versions/{2}'.format(
                 stack_name, stack_version, repo_id))
 
     def add(self, stack_name, stack_version, repo):
         """ Add the specified repository. """
-        response = self.config.request(
+        response = self.client.request(
             'post',
             '/api/v1/stacks/{0}/versions/{1}/repository_versions/'.format(
                 stack_name, stack_version))
