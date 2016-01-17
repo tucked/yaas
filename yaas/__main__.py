@@ -44,6 +44,7 @@ def main():
     subparsers = parser.add_subparsers()
     commands = [
         parsers.blueprint,
+        parsers.bootstrap,
         parsers.cluster,
         parsers.repo,
         parsers.service,

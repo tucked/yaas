@@ -7,6 +7,7 @@ import json
 import pprint
 import requests
 
+from .bootstrap import Bootstrap
 from .cluster import Cluster
 from .host import Host
 from .repo import Repo
@@ -35,6 +36,7 @@ class Client:
         self.raw = raw
         self.debug = debug
 
+        self.bootstrap = Bootstrap(self)
         self.cluster = Cluster(self)
         self.host = Host(self)
         self.repo = Repo(self)
