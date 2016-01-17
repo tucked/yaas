@@ -18,7 +18,7 @@ def command(parent_parser):
         cluster_ls,
         cluster_create,
         cluster_show,
-        cluster_destroy,
+        cluster_rm,
         cluster_start,
         cluster_stop,
         ]
@@ -99,18 +99,17 @@ def cluster_show(parent_parser):
     parser.add_argument(
         '-f',
         '--format',
-        action='store',
         help="Export cluster in specified format (e.g. blueprint)")
 
-def cluster_destroy(parent_parser):
-    def destroy(client, args):
+def cluster_rm(parent_parser):
+    def rm(client, args):
         for cluster_name in args.clusters:
-            client.cluster.destroy(cluster_name)
+            client.cluster.rm(cluster_name)
 
     parser = parent_parser.add_parser(
-        'destroy',
-        help=inspect.getdoc(Cluster.destroy))
-    parser.set_defaults(func=destroy)
+        'rm',
+        help=inspect.getdoc(Cluster.rm))
+    parser.set_defaults(func=rm)
     parser.add_argument(
         'clusters',
         nargs='+',
