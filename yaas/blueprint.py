@@ -13,7 +13,7 @@ class Blueprint:
     def __init__(self, client):
         self.client = client
 
-    def add(self, blueprint, blueprint_name, validate_topology=True):
+    def add(self, blueprint_name, blueprint, validate_topology=True):
         """ Add a blueprint to the Ambari server. """
         self.client.request(
             'post',
