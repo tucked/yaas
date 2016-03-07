@@ -62,6 +62,7 @@ class Cluster:
                 params={'format': format})
             raw_resp = response.json()
             utils.remove_hrefs(raw_resp)
+            utils.remove_key_recursively(raw_resp, 'content')
             return raw_resp
 
     def rm(self, cluster_name):

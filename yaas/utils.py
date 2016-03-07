@@ -3,15 +3,18 @@
 from __future__ import absolute_import
 from __future__ import print_function
 
-def remove_hrefs(el):
+def remove_key_recursively(el, key):
     if type(el) is dict:
-        if 'href' in el:
-            del el['href']
+        if key in el:
+            del el[key]
         for k, v in el.items():
-            remove_hrefs(v)
+            remove_key_recursively(v, key)
     elif type(el) is list:
         for array_el in el:
-            remove_hrefs(array_el)
+            remove_key_recursively(array_el, key)
+
+def remove_hrefs(el):
+    remove_key_recursively(el, 'href')
 
 def print_field(k, v, indent=0):
     k = str(k).replace('_', ' ')
