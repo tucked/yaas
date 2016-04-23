@@ -4,6 +4,7 @@ from __future__ import absolute_import
 from __future__ import print_function
 
 import json
+import pprint
 import requests
 
 from .blueprint import Blueprint
@@ -57,8 +58,8 @@ class Client:
     def _requests_opts(self):
         def response_hook(res, *args, **kwargs):
             if self.debug:
-                print("Request:", res.request.__dict__)
-                print("Response:", res.__dict__)
+                print("Request:", pprint.pprint(res.request.__dict__))
+                print("Response:", pprint.pprint(res.__dict__))
             if self.raw:
                 raw_resp = res.json()
                 utils.remove_hrefs(raw_resp)
