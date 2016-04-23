@@ -1,6 +1,7 @@
 # coding: utf-8
 
-__version__ = '0.0.1'
-
 from .client import Client
+from .objects import *  # pylint : disable=wildcard-import
+
+__version__ = '0.0.1'
 
