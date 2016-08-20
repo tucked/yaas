@@ -7,7 +7,6 @@ import json
 import pprint
 import requests
 
-from .blueprint import Blueprint
 from .cluster import Cluster
 from .host import Host
 from .repo import Repo
@@ -36,10 +35,32 @@ class Client:
         self.raw = raw
         self.debug = debug
 
-        self.blueprint = Blueprint(self)
         self.cluster = Cluster(self)
         self.host = Host(self)
         self.repo = Repo(self)
+
+    def blueprint_add(self, blueprint_name, blueprint, validate_topology=True):
+        self.request(
+            'post',
+            '/api/v1/blueprints/{name}'.format(name=blueprint_name),
+            data=json.dumps(blueprint.serialize()),  # `json=blueprint` would be better, but it doesn't work!
+            params={'validate_topology': validate_topology})
+
+    def blueprint_list(self):
+        response = self.request('get', '/api/v1/blueprints')
+        return [item['Blueprints']['blueprint_name'] for item in response.json()['items']]
+
+
+    def blueprint_remove(self, blueprint_name):
+        self.request(
+            'delete',
+            '/api/v1/blueprints/{name}'.format(name=blueprint_name))
+
+    def blueprint_get(self, blueprint_name):
+        response = self.request(
+            'get',
+            '/api/v1/blueprints/{name}'.format(name=blueprint_name))
+        return Blueprint(response.json())
 
     def request(self, method, path, *args, **kwargs):
         """
